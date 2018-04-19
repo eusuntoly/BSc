@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1509379126 source:d:\facultate\anul ii\semestrul i\tehnici avansate de programare\laborator - popescu s\tema 1\3\main.cpp
+	<fstream>
+	<iostream>
+	<list>
+
