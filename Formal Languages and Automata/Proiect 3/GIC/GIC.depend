@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1496071621 source:d:\facultate\anul i\semestrul ii\limbaje formale si automate\laborator - voda a\proiect 3\gic\main.cpp
+	<cstdio>
+	<cstring>
+	<vector>
+

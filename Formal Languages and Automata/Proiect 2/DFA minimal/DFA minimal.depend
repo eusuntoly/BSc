@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1494171539 source:d:\facultate\anul i\semestrul ii\limbaje formale si automate\laborator - voda a\proiect 2\dfa minimal\main.cpp
+	<cstdio>
+	<algorithm>
+	<cstring>
+	<vector>
+
