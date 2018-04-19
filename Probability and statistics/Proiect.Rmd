@@ -1,0 +1,475 @@
+---
+title: "Proiect"
+author: "Olaru Bogdan-Ioan & Nastase Stefan"
+date: "6 februarie 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Problema 1
+
+## 1.1
+### Consideram un esantion de N = 1000 pentru care calculam media si varianta repartitiilor Binomiala, Poisson, Exponentiala si Normala.
+```{r}
+N = 1000
+# definim functii pentru medie si vaianta.
+medie = function(v) {
+  return(sum(v)/N)
+}
+varianta = function(v, x) {
+  v = v - x
+  v = v * v
+  return(sum(v) / (N - 1))
+}
+# generam un esantion de talie N pentru Bin, ii calculam media si varianta
+obs  = rbinom(N, 100, 0.5)
+obs[0:50]
+medie(obs)
+varianta(obs, medie(obs))
+# generam un esantion de talie N pentru Pois, ii calculam media si varianta
+obs = rpois(N, 3)
+obs[0:50]
+medie(obs)
+varianta(obs, medie(obs))
+# generam un esantion de talie N pentru Exp, ii calculam media si varianta
+obs = rexp(N, 2)
+obs[0:50]
+medie(obs)
+varianta(obs, medie(obs))
+# generam un esantion de talie N pentru Norm, ii calculam media si varianta
+obs = rnorm(N);
+obs[0:50]
+medie(obs)
+varianta(obs, medie(obs))
+
+```
+
+## 1.2
+### Reprezentari grafice ale functiilor de masa, respectiv densitate.
+#### Bin(n, p)
+```{r}
+# consideram setul de parametri
+N = 150
+n = c(35, 100, 65 , 80, 40)
+p = c(0.4, 0.9, 0.33, 0.6, 0.6)
+culori = c("black", "yellow", "blue", "green", "red")
+# trasam graficul
+plot(1:N, dbinom(1:N, n[1], p[1]), type = "l",
+     ylab = "Functia de masa", xlab = "N", col = culori[1],
+     xlim = c(0, N), ylim = c(0, 0.15))
+grid()
+for(i in 2:5) {
+  lines(1:N, dbinom(1:N, n[i], p[i]), col = culori[i])
+}
+legend("topright", legend = paste("(n, p)<-",
+      c("(35, 0.4)", "(100, 0.9)", "(65, 0.33)", "(80, 0.6)", "(40, 0.6)")),
+        fill = culori, cex = 0.9, bty = "n")
+```
+
+#### Pois($\lambda$)
+```{r}
+# consideram setul de parametri
+N = 50
+x = matrix(nrow = 5, ncol = N)
+x[1,] = 1:50
+x[2,] = 11:60
+x[3,] = 36:85
+x[4,] = 21:70
+x[5,] = 41:90
+l = c(4, 20, 40, 50, 3)
+culori = c("black", "yellow", "blue", "green", "red")
+# trasam graficul
+plot(1:N, dpois(x[1,], l[1]), type = "l", ylab = "Functia de masa",
+     xlab = "N", col = culori[1], xlim = c(0, N), ylim = c(0, 0.2))
+grid()
+for(i in 2:5) {
+  lines(1:N, dpois(x[i,], l[i]), col = culori[i])
+}
+legend("topright", legend = c(expression(paste(lambda, "<-4")),
+                              expression(paste(lambda, "<-20")),
+                              expression(paste(lambda, "<-40")),
+                              expression(paste(lambda, "<-50")),
+                              expression(paste(lambda, "<-3"))),
+        fill = culori, cex = 0.9, bty = "n")
+```
+
+#### Exp($\lambda$)
+```{r}
+N = 30
+x = matrix(nrow = 5, ncol = N)
+x[1,] = seq(0, 5, length.out = 30)
+x[2,] = seq(2, 8, length.out = 30)
+x[3,] = seq(10, 25, length.out = 30)
+x[4,] = seq(5, 20, length.out = 30)
+x[5,] = seq(7, 30, length.out = 30)
+r = c(1, 0.5, 0.1, 0.8, 0.2)
+culori = c("black", "yellow", "blue", "green", "red")
+# trasam graficul
+plot(1:N, dexp(x[1,], rate = r[1]), type = "l",
+     ylab = "Functia de densitate", xlab = "N", col = culori[1],
+     xlim = c(0, N), ylim = c(0, 0.2))
+grid()
+for(i in 2:5) {
+  lines(1:N, dexp(x[i,], rate = r[i]), col = culori[i])
+}
+legend("topright", legend = c(expression(paste(lambda, "<-1")),
+                              expression(paste(lambda, "<-0.5")),
+                              expression(paste(lambda, "<-0.1")),
+                              expression(paste(lambda, "<-0.8")),
+                              expression(paste(lambda, "<-0.2"))),
+        fill = culori, cex = 0.9, bty = "n")
+```
+
+#### N($\mu$, $\sigma$^2^)
+```{r}
+N = 40
+x = matrix(nrow = 5, ncol = N)
+x[1,] = seq(-2, 7, length.out = N)
+x[2,] = seq(2, 4, length.out = N)
+x[3,] = seq(-3, 5, length.out = N)
+x[4,] = seq(-4, 1, length.out = N)
+x[5,] = seq(-10, 1, length.out = N)
+mn = c(0, 0.5, 1, 0, 0)
+s = c(1, 4, 2, 1.5, 5)
+culori = c("black", "yellow", "blue", "green", "red")
+# trasam graficul
+plot(1:N, dnorm(x[1,], mean = mn[1], sd = s[i]), type = "l",
+     ylab = "Functia de densitate", xlab = "N", col = culori[1],
+     ylim = c(0, 0.3))
+grid()
+for(i in 2:5) {
+  lines(1:N, dnorm(x[i,], mean = mn[i], sd = s[i]), col = culori[i])
+}
+legend("topleft", legend = c(expression(paste("(", mu, ",", sigma, ")<-(0, 1)")),
+                            expression(paste("(", mu, ",", sigma, ")<-(0.5, 4)")),
+                            expression(paste("(", mu, ",", sigma, ")<-(1,2)")),
+                            expression(paste("(", mu, ",", sigma, ")<-(0, 1.5)")),
+                            expression(paste("(", mu, ",", sigma, ")<-(0, 5)"))),
+        fill = culori, cex = 0.9, bty = "n")
+```
+
+## 1.3
+### Reprezentari grafice ale functiilor de repartitie.
+#### Bin(n, p)
+```{r}
+# consideram setul de parametri
+N = 150
+n = c(35, 100, 65 , 80, 40)
+p = c(0.4, 0.9, 0.33, 0.6, 0.6)
+culori = c("black", "yellow", "blue", "green", "red")
+# trasam graficul
+plot(1:N, pbinom(1:N, n[1], p[1]), type = "l",
+     ylab = "Functia de repartie", xlab = "N", col = culori[1],
+     xlim = c(0, N), ylim = c(0, 1))
+grid()
+for(i in 2:5) {
+  lines(1:N, pbinom(1:N, n[i], p[i]), col = culori[i])
+}
+legend("bottomright", legend = paste("(n, p)<-",
+      c("(35, 0.4)", "(100, 0.9)", "(65, 0.33)", "(80, 0.6)", "(40, 0.6)")),
+        fill = culori, cex = 0.9, bty = "n")
+```
+
+#### Pois($\lambda$)
+```{r}
+# consideram setul de parametri
+N = 50
+x = matrix(nrow = 5, ncol = N)
+x[1,] = 1:50
+x[2,] = 11:60
+x[3,] = 36:85
+x[4,] = 21:70
+x[5,] = 41:90
+l = c(4, 20, 40, 50, 3)
+culori = c("black", "yellow", "blue", "green", "red")
+# trasam graficul
+plot(1:N, ppois(x[1,], l[1]), type = "l", ylab = "Functia de repartitie",
+     xlab = "N", col = culori[1], xlim = c(0, N), ylim = c(0, 1))
+grid()
+for(i in 2:5) {
+  lines(1:N, ppois(x[i,], l[i]), col = culori[i])
+}
+legend("topright", legend = c(expression(paste(lambda, "<-4")),
+                              expression(paste(lambda, "<-20")),
+                              expression(paste(lambda, "<-40")),
+                              expression(paste(lambda, "<-50")),
+                              expression(paste(lambda, "<-3"))),
+        fill = culori, cex = 0.9, bty = "n")
+```
+
+#### Exp($\lambda$)
+```{r}
+N = 30
+x = matrix(nrow = 5, ncol = N)
+x[1,] = seq(0, 5, length.out = 30)
+x[2,] = seq(2, 8, length.out = 30)
+x[3,] = seq(10, 25, length.out = 30)
+x[4,] = seq(5, 20, length.out = 30)
+x[5,] = seq(7, 30, length.out = 30)
+r = c(1, 0.5, 0.1, 0.8, 0.2)
+culori = c("black", "yellow", "blue", "green", "red")
+# trasam graficul
+plot(1:N, pexp(x[1,], rate = r[1]), type = "l",
+     ylab = "Functia de repartitie", xlab = "N", col = culori[1],
+     xlim = c(0, N), ylim = c(0, 1))
+grid()
+for(i in 2:5) {
+  lines(1:N, pexp(x[i,], rate = r[i]), col = culori[i])
+}
+legend("topright", legend = c(expression(paste(lambda, "<-1")),
+                              expression(paste(lambda, "<-0.5")),
+                              expression(paste(lambda, "<-0.1")),
+                              expression(paste(lambda, "<-0.8")),
+                              expression(paste(lambda, "<-0.2"))),
+        fill = culori, cex = 0.9, bty = "n")
+```
+
+#### N($\mu$, $\sigma$^2^)
+```{r}
+N = 40
+x = matrix(nrow = 5, ncol = N)
+x[1,] = seq(-2, 7, length.out = N)
+x[2,] = seq(2, 4, length.out = N)
+x[3,] = seq(-3, 5, length.out = N)
+x[4,] = seq(-4, 1, length.out = N)
+x[5,] = seq(-10, 1, length.out = N)
+mn = c(0, 0.5, 1, 0, 0)
+s = c(1, 4, 2, 1.5, 5)
+culori = c("black", "yellow", "blue", "green", "red")
+# trasam graficul
+plot(1:N, pnorm(x[1,], mean = mn[1], sd = s[i]), type = "l",
+     ylab = "Functia de repartitie", xlab = "N", col = culori[1],
+     ylim = c(0, 1))
+grid()
+for(i in 2:5) {
+  lines(1:N, pnorm(x[i,], mean = mn[i], sd = s[i]), col = culori[i])
+}
+legend("topleft", legend = c(expression(paste("(", mu, ",", sigma, ")<-(0, 1)")),
+                            expression(paste("(", mu, ",", sigma, ")<-(0.5, 4)")),
+                            expression(paste("(", mu, ",", sigma, ")<-(1,2)")),
+                            expression(paste("(", mu, ",", sigma, ")<-(0, 1.5)")),
+                            expression(paste("(", mu, ",", sigma, ")<-(0, 5)"))),
+        fill = culori, cex = 0.9, bty = "n")
+```
+
+## 1.4
+###Tabele cu aproximari
+```{r}
+N = c(25, 50, 100)
+P = c(0.05, 0.1)
+k = 1:10
+# definim functiile de aproximare
+aproximarePoisson = function(s, n, p) {
+  sum = 0
+  l = n * p
+  for(j in 0:s){
+      sum = sum + exp(-l) * l ^ j / factorial(j)
+  }
+  return(sum)
+}
+aproximareNormala = function(n, p) {
+  return(pnorm(k, n * p, sqrt(n * p * (1 - p))))
+}
+aproximareNormalaCorectie = function(n, p) {
+  return(pnorm(k + 0.5, n * p, sqrt(n * p * (1 - p))))
+}
+aproximareCampPaulson = function(n, p) {
+  a = 1 / (9 * (n - k))
+  b = 1 / (9 * (k + 1))
+  r = floor((k + 1) * (1 - p)) / floor(p * (n - k))
+  sigma = sqrt(a + b * r ^ (2 / 3))
+  mu = 1 - a
+  c = (1 - b) * r ^ (1 / 3)
+  return(pnorm(c, mu, sigma))
+}
+# functia pentru crearea tabelului
+table = function(n, p) {
+  Binomiala = pbinom(k, n, p)
+  Poisson = aproximarePoisson(1, n, p)
+  for(i in 2:10) {
+    Poisson = c(Poisson, aproximarePoisson(i, n, p))
+  }
+  Normala = aproximareNormala(n, p)
+  NormalaCorectie = aproximareNormalaCorectie(n, p)
+  CampPaulson = aproximareCampPaulson(n, p)
+  rez = data.frame(k, Binomiala, Normala, Poisson,
+                   "Normala Corectie" = NormalaCorectie,
+                   "Camp-Paulson" = CampPaulson)
+  return(rez)
+}
+# n = 25, p = 0.05
+table(N[1], P[1])
+# n = 25, p = 0.1
+table(n[1], P[2])
+# n = 50, p = 0.05
+table(N[2], P[1])
+# n = 50, p = 0.1
+table(n[2], P[2])
+# n = 100, p = 0.05
+table(N[3], P[1])
+# n = 100, p = 0.1
+table(n[3], P[2])
+```
+
+## 1.5
+#### Cuantificarea acuratetii aproximarilor folosind distanta Kolmogorov
+```{r}
+P = seq(0.01, 0.5, 0.01)
+error = function(n){
+  diferentaPoisson  = c()
+  diferentaNormala = c()
+  diferentaNormalaCorectie = c()
+  diferentaCampPaulson = c()
+  for(p in P) {
+    Bin = pbinom(k, n, p)
+    Pois = aproximarePoisson(1, n, p)
+    for(i in 2:10)
+      Pois = c(Pois, aproximarePoisson(i, n, p))
+    Norm = aproximareNormala(n, p)
+    NormCorectie = aproximareNormalaCorectie(n, p)
+    CampPaulson = aproximareCampPaulson(n, p)
+    diferentaPoisson = c(diferentaPoisson, max( abs(Bin - Pois) ))
+    diferentaNormala = c(diferentaNormala, max( abs(Bin - Norm) ))
+    diferentaNormalaCorectie = c(diferentaNormalaCorectie,
+                                 max( abs(Bin - NormCorectie) ))
+    diferentaCampPaulson = c(diferentaCampPaulson,
+                             max( abs(Bin - CampPaulson) ))
+  }
+  max_y = max(diferentaPoisson, diferentaNormala, diferentaNormalaCorectie,
+             diferentaCampPaulson)
+  plot(P, diferentaPoisson, xlim = c(0.01, 0.5), ylim = c(0, max_y),
+       xlab = "p", ylab = "Erori aproximari", col = "blue", type = "p",
+       pch = 2, cex = 0.7)
+  grid()
+  points(P, diferentaNormala, col = "black", type = "p", pch = 10, cex = 0.7)
+  points(P, diferentaNormalaCorectie, col = "red", type = "p",
+         pch = 7, cex = 0.7)
+  points(P, diferentaCampPaulson, col = "yellow", type = "p", pch = 9, cex = 0.7)
+  legend("topright", legend = c("Poisson", "Normala", "Normala Corectie",
+          "Camp-Paulson"), fill = c("blue", "black", "red", "yellow"),
+            bty = "n", cex = 0.7)
+}
+error(25)
+error(50)
+error(100)
+```
+*Dupa cum se putea observa si din tabele anterioare, aproximarea Normala cu Corectie este cea mai precisa, alaturi de aproximarea Camp-Paulson. Aproximarea Poisson este buna pentru p < 0.05 si n > 20. Iar aproximarea Normala se este buna pe masura ce n si p cresc. Toate tind sa aproximeze mai bine pe masura ce numarul de observatii creste.*
+
+# Problema 2
+## 2.1
+####Justificati teoretic ca putem simula un vector (cuplu) aleator repartizat uniform pe patratul [-1, 1] plecand de la doua v.a. independente repartizate uniform pe segmentul [-1, 1].
+
+$$X \sim U([-1,1])$$
+$$Y \sim U([-1,1])$$
+Cerinta:
+$$ (X,Y) \sim U([-1,1]^2)$$  
+$(X,Y) \sim U([-1,1]^2) 	\Longleftrightarrow f_{(X,Y)}=\frac{1}{A}*1_{[-1,1]^2}(x,y)$  
+$A=(1-(-1))*(1-(-1)=4$  
+$\mathbb{P}((X,Y)\in[-1,1]^2)=\mathbb{P}(X\in[-1,1],Y\in[-1,1])=\mathbb{P}(X\in[-1,1])*\mathbb{P}(Y\in[-1,1])$   
+Cum $X\perp Y$  
+$\mathbb{P}((X,Y)\in[-1,1]^2)=\mathbb{P}(X\in[-1,1])*\mathbb{P}(Y\in[-1,1])=\int_{-1}^1f_X(x)dx*\int_{-1}^1f_Y(y)dy=\int_{-1}^1\int_{-1}^1f_X(x)*f_Y(y)dxdy$  
+Cum  
+$\mathbb{P}((X,Y)\in[-1,1]^2)=\int_{-1}^1\int_{-1}^1f_{(X,Y)}(x,y)dxdy$  
+$\Rightarrow \int_{-1}^1\int_{-1}^1f_{(X,Y)}(x,y)dxdy=\int_{-1}^1\int_{-1}^1f_X(x)*f_Y(y)dxdy\Rightarrow f_X(x)*f_Y(y)=f_{(X,Y)}(x,y)$
+Avem  
+$f_X(x)*f_Y(y)=\frac{1}{2}*1_{[-1,1]}(x)*\frac{1}{2}*1_{[-1,1]}(y)=\frac{1}{4}*1_{[-1,1]^2}(x,y)=\frac{1}{A}*1_{[-1,1]^2}(x,y)$
+
+## 2.2
+####Prin metoda acceptarii si respingerii simulati N = 1000 de puncte independente repartizate uniform pe discul unitate D(1). Reprezentati grafic punctele (Xi, Yi) din interiorul discului unitate cu albastru, si pe celelalte cu rosu
+
+*Incepem prin a crea un plot gol. Generam repetitiv observatii pentru o abscisa din intervalul [-1,1] si pentru o ordonata din [-1,1] (ambele repartizate uniform pe intervalele corespunzatoare). Calculam distata de la punctul generat la origine, iar daca aceasta este valida, coloram punctul albastru, daca nu, rosu. Numarul punctelor albastre stim ca va fi in final N.*
+```{r}
+N=1000
+par(pty="s")
+plot(0,pch='',ylab='y',xlab='x',xlim = c(-1,1),ylim=c(-1,1))
+n=0;
+x=0;y=0;
+while(n<N)
+{
+  x=runif(1,min=-1,max = 1)
+  y=runif(1,min=-1,max = 1)
+  dist=sqrt(x^2+y^2)
+  if(dist<=1)
+    {points(x,y,col="blue")
+    n=n+1}
+  else
+    points(x,y,col="red")
+}
+```
+
+## 2.3
+####Calculati media aritmetica a distantei care separa cele N puncte de origine. Comparati rezultatul cu media teoritica a variabilei corespunzatoare.
+
+*Calculam media aritmetica a distantelor ce separa cele N puncte de origine.
+Consideram 2 vectori de dimensiune N initializati cu valoarea 0. Generam apoi repetitiv observatii(pana ajung la numarul N cele valide) cu ordonata repartizata uniform in intervalul [-1,1] si abscisa repartizata uniform tot in intervalul [-1,1]. Calculam distanta de la punctul generat la originea (0,0), iar daca punctul este valid(se afla in interiorul Cercului de raza 1 si centru (0,0)),ii adaugam coordonatele in vectorii xi, respectiv yi. Apoi, reiteram prin cei doi vectori(deoarece avem doar puncte valide) si calculam media distantei de la punctele corespunzatoare la origine.*
+```{r}
+N=1000
+n=0;
+x=0;y=0;
+xi=rep(N,0);
+yi=rep(N,0);
+med=0;
+while(n<N)
+{
+  x=runif(1,min=-1,max = 1)
+  y=runif(1,min=-1,max = 1)
+  dist=sqrt(x^2+y^2)
+  if(dist<=1)
+  {n=n+1
+    xi[n]=x;
+    yi[n]=y;}
+}
+for(i in 1:N)
+{
+  dist=sqrt(xi[i]^2+yi[i]^2)
+  med=med+dist;
+}
+med=med/N;
+med
+```
+Calculam in continuare media teoretica:  
+Stim ca $t:\mathbb{R}^2\rightarrow\mathbb{R},t-continua$ si $Z=t(X,Y)$ atunci 
+$\mathbb{E}[Z]=\iint_{\mathbb{R}^2}t(x,y)*f_{(X,Y)}(x,y)dxdy$  
+La noi $t(x,y)=\sqrt{x^2+y^2}$  
+$\mathbb{E}[Z]=\iint_{\mathbb{R}^2}t(x,y)*f_{(X,Y)}(x,y)dxdy=\iint_{D(1)}\sqrt{x^2+y^2}*\frac{1}{\pi}*1_{D(1)}(x,y)dydx$  
+Deoarece  
+$0\leq x^2+y^2\leq1$ si $0\leq x\leq 1$ si $0\leq y\leq 1\Rightarrow$
+$\iint_{D(1)}\sqrt{x^2+y^2}*\frac{1}{\pi}*1_{D(1)}(x,y)dydx=\frac{1}{\pi}\int _{-1}^1\int _{-\sqrt{1-x^2}}^{\sqrt{1-x^2}}\sqrt{x^2+y^2}dydx$  
+Vom folosi schimbarea de variabila $x=rcos(\theta)$ si $y=rsin(\theta), r>0$  
+Cum avem $1_{D(1)}(x,y)=1_{\{x^2+y^2\leq 1\}}(x,y)=1_{\{r^2cos(\theta)^2+r^2sin(\theta)^2\leq 1\}}(r,\theta)=1_{\{r^2\leq 1\}}(r,\theta)=1_{[0,1]}(r)*1_{[0,2\pi]}(\theta)$  
+Fie $G\subseteq \mathbb{R}^2$ multime deschisa si $g:G\rightarrow\mathbb{R}^2,g\in\mathcal{C}^1$ g-injectiva si Jacobianul lui g nu se anuleaza. Atunci pentru $f*1_{g(G)}$ este pozitiva si integrabila  $\iint_{g(G)}f(x,y)dxdy=\iint_Gf(g(r,\theta))|detJ_g|drd\theta$  
+Cum $G=[0,1]\times[0,2\pi]$ si $g(r,\theta)=(x,y)=(r\cos(\theta),r\sin(\theta))$  $J_g=\begin{pmatrix}\frac{\partial g_i}{\partial x_j}\end{pmatrix}_{i,j}=\begin{pmatrix}\frac{\partial g_1}{\partial r}&\frac{\partial g_1}{\partial \theta }\\ \frac{\partial g_2}{\partial r}&\frac{\partial g_2}{\partial \theta }\end{pmatrix}$  
+$detJ_g=det\begin{pmatrix}\cos \left(\theta \right)&-r\sin \left(\theta \right)\\ \sin \left(\theta \right)&r\cos \left(\theta \right)\end{pmatrix}=r$  
+$\iint_{D(1)}\sqrt{x^2+y^2}*\frac{1}{\pi}*1_{D(1)}(x,y)dydx=\frac{1}{\pi}\int _{-1}^1\int _{-\sqrt{1-x^2}}^{\sqrt{1-x^2}}\sqrt{x^2+y^2}dydx=\frac{1}{\pi}\int _0^{2\pi }\int _0^1\sqrt{r^2}rdrd\theta$  
+$\int _0^1\sqrt{r^2}rdr=\frac{r^3}{3}|_0^1=\frac{1}{3}$  
+$\frac{1}{\pi}\int _0^{2\pi }\frac{1}{3}d\theta=\frac{1}{3\pi}\int _0^{2\pi }d\theta=\frac{2\pi}{3\pi}=\frac{2}{3}=0.6(7)$
+
+## 2.4
+####4. Plecand de la densitatea cuplului (X, Y ), gasiti densitatea v.a. R si $\theta$.
+
+$$\iint_{D(1)}f_{(X,Y)}(x,y)dxdy$$  
+Vom folosi schimbarea de variabila $x=rcos(\theta)$ si $y=rsin(\theta), r>0$  
+Cum avem $1_{D(1)}(x,y)=1_{\{x^2+y^2\leq 1\}}(x,y)=1_{\{r^2cos(\theta)^2+r^2sin(\theta)^2\leq 1\}}(r,\theta)=1_{\{r^2\leq 1\}}(r,\theta)=1_{[0,1]}(r)*1_{[0,2\pi]}(\theta)$  
+Fie $G\subseteq \mathbb{R}^2$ multime deschisa si $g:G\rightarrow\mathbb{R}^2,g\in\mathcal{C}^1$ g-injectiva si Jacobianul lui g nu se anuleaza. Atunci pentru $f*1_{g(G)}$ este pozitiva si integrabila  $\iint_{g(G)}f(x,y)dxdy=\iint_Gf(g(r,\theta))|detJ_g|drd\theta$  
+Cum $G=[0,1]\times[0,2\pi]$ si $g(r,\theta)=(x,y)=(r\cos(\theta),r\sin(\theta))$  $J_g=\begin{pmatrix}\frac{\partial g_i}{\partial x_j}\end{pmatrix}_{i,j}=\begin{pmatrix}\frac{\partial g_1}{\partial r}&\frac{\partial g_1}{\partial \theta }\\ \frac{\partial g_2}{\partial r}&\frac{\partial g_2}{\partial \theta }\end{pmatrix}$  
+$detJ_g=det\begin{pmatrix}\cos \left(\theta \right)&-r\sin \left(\theta \right)\\ \sin \left(\theta \right)&r\cos \left(\theta \right)\end{pmatrix}=r$  $$\iint_{D(1)}f_{(X,Y)}(x,y)dxdy=\iint_Gf_{(X,Y)}(g(r,\theta))rdrd\theta$$  
+$f_R(r)=\int rf_{(X,Y)}(g(r,\theta))1_G(r,\theta)d\theta=\int_0^{2\pi}\frac{1}{\pi}r1_{[0,1]}(r)d\theta=r\frac{1}{\pi}1_{[0,1]}(r)\int_0^{2\pi}d\theta=2r1_{[0,1]}(r)$  
+$f_{\theta}(\theta)=\int rf_{(X,Y)}(g(r,\theta))1_G(r,\theta)dr=\int_0^1\frac{1}{\pi}r1_{[0,2\pi]}(\theta)dr=\frac{1}{\pi}1_{[0,2\pi]}(\theta)\int_0^{1}rdr=\frac{1}{\pi}1_{[0,2\pi]}(\theta)\frac{r^2}{2}|_0^1=\frac{1}{2\pi}1_{[0,2\pi]}(\theta)$
+
+## 2.5
+####Simulati N = 1000 de puncte prin aceasta metoda si ilustrati grafic aceste puncte (incluzand conturul cercului).
+
+*Avem la inceput un plot gol. Consideram N observatii, coordonatele polare fiind distribuite fiecare uniform, raza pe intervalul [0,1],iar unghiul polar pe intervalul [0,2pi]. Adaugam punctele generate graficului initial si observam ca toate observatiile se afla in interiorul cercului de centru (0,0) si raza 1.*
+```{r}
+N=1000
+par(pty="s")
+plot(0,pch='',ylab='y',xlab='x',xlim = c(-1,1),ylim=c(-1,1))
+for(i in 1:N)
+{
+  r=runif(1,min=0,max=1)
+  te=runif(1,min=0,max=2*pi)
+  points(r*cos(te),r*sin(te),col="blue")
+}
+```
