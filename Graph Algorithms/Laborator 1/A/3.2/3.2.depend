@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1488205773 source:c:\users\yolol\desktop\3.2\main.cpp
+	<cstdio>
+	<vector>
+
