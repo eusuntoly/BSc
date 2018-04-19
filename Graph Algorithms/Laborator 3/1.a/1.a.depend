@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1491822900 source:d:\facultate\anul i\semestrul ii\algoritmica grafurilor\laborator - patrascu a\laborator 3\1.a\main.cpp
+	<cstdio>
+	<algorithm>
+	<vector>
+
