@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1509011390 source:d:\facultate\anul ii\semestrul i\geometrie computationala\laborator - oprea t\laborator 2\main.cpp
+	<iostream>
+	<algorithm>
+	<queue>
+
