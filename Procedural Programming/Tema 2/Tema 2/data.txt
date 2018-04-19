@@ -1,0 +1,4 @@
+Benchia Madalin, Software, Junior, C#, Bacau
+Coteanu Sebastian, Software, Senior, JS, Buzau
+Nastase Stefan, Web, Senior, JS, Galati
+Olaru Bogdan Ioan, Developing, Junior, Java, Bucuresti
