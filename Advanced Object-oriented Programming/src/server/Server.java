@@ -8,9 +8,9 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -36,28 +36,30 @@ public class Server extends Thread{
 				Vehicle v = (Vehicle) is.readObject();
 				Integer cs = (Integer) is.readObject();
 				Connection conn = null;
-				Statement stmt = null;
+				PreparedStatement stmt = null;
 				try {
 					Class.forName(JDBC_DRIVER);
 					conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-					stmt = conn.createStatement();
 					String sql = null;
 					if(cs == 1) {
 						sql = "SELECT registration_id FROM vehicles WHERE registration_id = '" + v.getRegistrationId() + "'";
-						ResultSet rs = stmt.executeQuery(sql);
+						stmt = conn.prepareStatement(sql);
+						ResultSet rs = stmt.executeQuery();
 						if(rs.next()) {
 							os.writeObject(0);
 						}
 						else {
 							sql = "INSERT INTO vehicles VALUES('" + v.getRegistrationId() + "', '" + v.getVehicleType() + "', '" + v.getOwner() + "', " + v.getHorsePower() + ", '" + v.getVin() + "', " + v.getEngineDisp() + ", TO_DATE('" + v.getRegistrationDate().get(Calendar.DAY_OF_MONTH) + "-" + v.getRegistrationDate().get(Calendar.MONTH) + "-" + v.getRegistrationDate().get(Calendar.YEAR) + "', 'DD-MM-YYYY')" + ", TO_DATE('" + v.getRegistrationDate().get(Calendar.DAY_OF_MONTH) + "-" + v.getRegistrationDate().get(Calendar.MONTH) + "-" + v.getRegistrationDate().get(Calendar.YEAR) + "', 'DD-MM-YYYY'), '" + (v.getStolen() ? "DA" : "NU") + "', 'DA')";
-							stmt.executeUpdate(sql);
+							stmt = conn.prepareStatement(sql);
+							stmt.executeUpdate();
 							os.writeObject(1);
 						}
 						rs.close();
 					}
 					else if(cs == 2) {
 						sql = "SELECT registration_id, vehicle_type, owner, horse_power, vin, engine_disp, stolen, registration_date, modification_date FROM vehicles WHERE registration_id = '" + v.getRegistrationId() + "'";
-						ResultSet rs = stmt.executeQuery(sql);
+						stmt = conn.prepareStatement(sql);
+						ResultSet rs = stmt.executeQuery();
 						if(!rs.next()) {
 							os.writeObject(0);
 						}
@@ -80,24 +82,30 @@ public class Server extends Thread{
 					}
 					else if(cs == 3) {
 						sql = "INSERT INTO vehicles_history SELECT * FROM vehicles WHERE registration_id = '" + v.getRegistrationId() + "'";
-						stmt.executeUpdate(sql);
+						stmt = conn.prepareStatement(sql);
+						stmt.executeUpdate();
 						sql = "DELETE FROM vehicles WHERE registration_id = '" + v.getRegistrationId() + "'";
-						stmt.executeUpdate(sql);
+						stmt = conn.prepareStatement(sql);
+						stmt.executeUpdate();
 						sql = "INSERT INTO vehicles VALUES('" + v.getRegistrationId() + "', '" + v.getVehicleType() + "', '" + v.getOwner() + "', " + v.getHorsePower() + ", '" + v.getVin() + "', " + v.getEngineDisp() + ", TO_DATE('" + v.getRegistrationDate().get(Calendar.DAY_OF_MONTH) + "-" + v.getRegistrationDate().get(Calendar.MONTH) + "-" + v.getRegistrationDate().get(Calendar.YEAR) + "', 'DD-MM-YYYY')" + ", TO_DATE('" + v.getModificationDate().get(Calendar.DAY_OF_MONTH) + "-" + v.getModificationDate().get(Calendar.MONTH) + "-" + v.getModificationDate().get(Calendar.YEAR) + "', 'DD-MM-YYYY'), '" + (v.getStolen() ? "DA" : "NU") + "', '" + (v.getInUse() ? "DA" : "NU") + "')";
-						stmt.executeUpdate(sql);
+						stmt = conn.prepareStatement(sql);
+						stmt.executeUpdate();
 						os.writeObject(1);
 					}
 					else if(cs == 4) {
 						sql = "SELECT registration_id, registration_date FROM vehicles WHERE registration_id = '" + v.getRegistrationId() + "'";
-						ResultSet rs = stmt.executeQuery(sql);
+						stmt = conn.prepareStatement(sql);
+						ResultSet rs = stmt.executeQuery();
 						if(!rs.next())
 							os.writeObject(0);
 						else {
 							os.writeObject(1);
 							sql = "INSERT INTO registration_history VALUES('" + rs.getString("registration_id") + "', TO_DATE(substr('" + rs.getString("registration_date") + "', 0, 10), 'yyyy-mm-dd'), TO_DATE('31-05-2018', 'dd-mm-yyyy'))";
-							stmt.executeUpdate(sql);
+							stmt = conn.prepareStatement(sql);
+							stmt.executeUpdate();
 							sql = "DELETE FROM vehicles WHERE registration_id = '" + v.getRegistrationId() + "'";
-							stmt.executeUpdate(sql);
+							stmt = conn.prepareStatement(sql);
+							stmt.executeUpdate();
 						}
 						rs.close();
 					}
